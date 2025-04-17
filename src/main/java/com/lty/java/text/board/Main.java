@@ -35,6 +35,13 @@ public class Main {
         //id++;
         //lastArticleId = id;
 
+        // 객체 생성 후, 객체가 가지고 있는 변수에 데이터 저장
+        Article article = new Article();
+        article.id = id;
+        article.subject = subject;
+        article.content = content;
+
+        System.out.println("생성 된 게시물 객체 : " + article);
         System.out.printf("%d번 게시물이 등록되었습니다.\n", id);
 
       } else if (cmd.equals("exit")) {
@@ -49,4 +56,10 @@ public class Main {
 
     sc.close();
   }
+}
+
+class Article {
+  int id;
+  String subject;
+  String content;
 }
