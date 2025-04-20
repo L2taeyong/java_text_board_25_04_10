@@ -20,12 +20,14 @@ public class Main {
   }
   public static void main(String[] args) {
     Scanner sc = new Scanner(System.in);
-
     List<Article> articles = new ArrayList<>();
-    int lastArticleId = 0;
-    Article lastArticle = null;
 
     makeArticleTestDate(articles);
+
+    int lastArticleId = articles.get(articles.size()-1).id;
+    Article lastArticle = null;
+
+
 
     System.out.println("== 자바 텍스트 게시판 ==");
     System.out.println("텍스트 게시판을 시작합니다.");
