@@ -12,6 +12,9 @@ public class AppTest {
     System.out.println(params.get("content"));
     System.out.println(params.get("writerName"));
     System.out.println(params.get("boardId"));
+
+    String urlPath = Util.getPathFromUrl(url);
+    System.out.println(urlPath);
   }
 }
 
@@ -36,4 +39,7 @@ class Util {
 
    return params;
   }
+ static String getPathFromUrl(String url) {
+   return url.split("\\?",2)[0];
+ }
 }
