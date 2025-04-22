@@ -7,7 +7,7 @@ public class SearchKeywordTest {
   public static void main(String[] args) {
     List<Article> articles = new ArrayList<>();
 
-    IntStream.rangeClosed(1, 5)
+    IntStream.rangeClosed(1, 3)
         .forEach(i -> articles.add(new Article(i, "제목" + i, "내용" + i)));
 
     articles.add(new Article(6, "자바는 무슨 언어인가요?", "자바가 절차지향인지 객체지향인지 궁금합니다."));
