@@ -56,87 +56,11 @@ public class Main {
 
         System.out.printf("%d번 게시물이 등록되었습니다.\n", id);
       } else if (rq.getUrlPath().equals("/usr/article/list")) {
-        Map<String, String> params = rq.getParams();
-
-        // 검색 시작
-        List<Article> filteredArticles = new ArrayList<>();
-
-        if(params.containsKey("seaerchKeyword")) {
-          String searchKeyword = params.get("searchKeyword");
-
-          // filteredArticles = new ArrayList<>(); // 새 리스트 객체 생성
-
-          filteredArticles = articles.stream()
-              .filter(article -> article.subject.contains(searchKeyword) || article.content.contains(searchKeyword))
-              .collect(Collectors.toList());
-         }
-        //검색 끝
-
-
-        //정렬 로직 시작
-        List<Article> sortedArticles = filteredArticles ;
-
-        if (params.containsKey("orderBy")) {
-          String orderBy = params.get("orderBy");
-
-          switch (orderBy) {
-            case "idAsc":
-              sortedArticles.sort((a1, a2) -> a1.id - a2.id);
-              break;
-            case "idDesc":
-            default:
-              sortedArticles.sort((a1, a2) -> a2.id - a1.id);
-              break;
-          }
-        }
-        else {
-          // /usr/article/list 라고만 입력이 된 경우를 대비
-          sortedArticles.sort((a1, a2) -> a2.id - a1.id);
-        }
-        // 정렬 끝
-
-
-        System.out.printf("== 게시물 리스트(총 %d 개) ==\n",sortedArticles.size());
-        System.out.println("번호 | 제목");
-
-        sortedArticles.forEach(
-            article -> System.out.printf("%d | %s\n", article.id, article.subject)
-        );
-
+        actionUsrArticleList(rq, articles);
       } else if (rq.getUrlPath().equals("/usr/article/detail")) {
-        Map<String, String> params = rq.getParams();
-
-        if (!params.containsKey("id")) {
-          System.out.println("id값을 입력해주세요.");
-          continue;
-        }
-
-        int id = 0;
-
-        try {
-          id = Integer.parseInt(params.get("id"));
-        } catch (NumberFormatException e) {
-          System.out.println("id를 정수형태로 입력해주세요.");
-          continue;
-        }
+        actionUsrArticleDetail(rq, articles);
 
 
-        if (articles.isEmpty()) {
-          System.out.println("게시물이 존재하지 않습니다.");
-          continue;
-        }
-
-        if (id > articles.size()) {
-          System.out.printf("%d번 게시물은 존재하지 않습니다.\n", id);
-          continue;
-        }
-
-        Article article = articles.get(id - 1);
-
-        System.out.println("== 게시물 상세보기 ==");
-        System.out.printf("번호 : %d\n", article.id);
-        System.out.printf("제목 : %s\n", article.subject);
-        System.out.printf("내용 : %s\n", article.content);
       } else if (rq.getUrlPath().equals("exit")) {
         System.out.println("텍스트 게시판을 종료합니다.");
         break;
@@ -148,6 +72,92 @@ public class Main {
     System.out.println("== 자바 텍스트 게시판 종료 ==");
 
     sc.close();
+  }
+
+  private static void actionUsrArticleDetail(Rq rq, List<Article> articles) {
+    Map<String, String> params = rq.getParams();
+
+    if (!params.containsKey("id")) {
+      System.out.println("id값을 입력해주세요.");
+      return;
+    }
+
+    int id = 0;
+
+    try {
+      id = Integer.parseInt(params.get("id"));
+    } catch (NumberFormatException e) {
+      System.out.println("id를 정수형태로 입력해주세요.");
+      return;
+    }
+
+
+    if (articles.isEmpty()) {
+      System.out.println("게시물이 존재하지 않습니다.");
+      return;
+    }
+
+    if (id > articles.size()) {
+      System.out.printf("%d번 게시물은 존재하지 않습니다.\n", id);
+      return;
+    }
+
+    Article article = articles.get(id - 1);
+
+    System.out.println("== 게시물 상세보기 ==");
+    System.out.printf("번호 : %d\n", article.id);
+    System.out.printf("제목 : %s\n", article.subject);
+    System.out.printf("내용 : %s\n", article.content);
+  }
+
+  private static void actionUsrArticleList(Rq rq, List<Article> articles) {
+    Map<String, String> params = rq.getParams();
+
+    // 검색 시작
+    List<Article> filteredArticles = new ArrayList<>();
+
+    if(params.containsKey("seaerchKeyword")) {
+      String searchKeyword = params.get("searchKeyword");
+
+      // filteredArticles = new ArrayList<>(); // 새 리스트 객체 생성
+
+      filteredArticles = articles.stream()
+          .filter(article -> article.subject.contains(searchKeyword) || article.content.contains(searchKeyword))
+          .collect(Collectors.toList());
+    }
+    //검색 끝
+
+
+    //정렬 로직 시작
+    List<Article> sortedArticles = filteredArticles ;
+
+    if (params.containsKey("orderBy")) {
+      String orderBy = params.get("orderBy");
+
+      switch (orderBy) {
+        case "idAsc":
+          sortedArticles.sort((a1, a2) -> a1.id - a2.id);
+          break;
+        case "idDesc":
+        default:
+          sortedArticles.sort((a1, a2) -> a2.id - a1.id);
+          break;
+      }
+    }
+    else {
+      // /usr/article/list 라고만 입력이 된 경우를 대비
+      sortedArticles.sort((a1, a2) -> a2.id - a1.id);
+    }
+    // 정렬 끝
+
+
+    System.out.printf("== 게시물 리스트(총 %d 개) ==\n",sortedArticles.size());
+    System.out.println("번호 | 제목");
+
+    sortedArticles.forEach(
+        article -> System.out.printf("%d | %s\n", article.id, article.subject)
+    );
+
   }
 }
 
