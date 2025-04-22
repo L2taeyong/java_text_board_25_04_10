@@ -76,30 +76,23 @@ public class Main {
       return;
     }
 
-    //v1
-//    Article findarticle = null;
-//
-//    for(Article article : articles) {
-//      if(article.id == id) {
-//        findarticle = article;
-//        break;
-//      }
-//    }
+    Article article = findById(id, articles);
+    
 
-    // v2
-    int finalId = id;
-    Article findarticle = articles.stream()
-        .filter(article -> article.id == finalId)
-        .findFirst()
-        .orElse(null);
-
-    if(findarticle == null) {
+    if(article == null) {
       System.out.printf("%d번 게시물이 존재하지 않습니다.\n",id);
       return;
     }
 
-    articles.remove(findarticle);
+    articles.remove(article);
     System.out.printf("%d번 게시물이 삭제되었습니다.\n",id);
+  }
+
+  private static Article findById(int id, List<Article> articles) {
+    return articles.stream()
+        .filter(article -> article.id == id)
+        .findFirst()
+        .orElse(null);
   }
 
   private static void actionUsrArticleModify(Scanner sc, Rq rq, List<Article> articles) {
@@ -129,8 +122,15 @@ public class Main {
       return;
     }
 
+    Article article = findById(id, articles);
+
+
+    if(article == null) {
+      System.out.printf("%d번 게시물이 존재하지 않습니다.\n",id);
+      return;
+    }
+
     System.out.printf("== %d번 게시물 수정 ==\n", id);
-    Article article = articles.get(id - 1);
 
     System.out.print("새 제목 : ");
     article.subject = sc.nextLine();
@@ -195,9 +195,15 @@ public class Main {
       return;
     }
 
-    Article article = articles.get(id - 1);
+    Article article = findById(id, articles);
 
-    System.out.println("== 게시물 상세보기 ==");
+
+    if(article == null) {
+      System.out.printf("%d번 게시물이 존재하지 않습니다.\n",id);
+      return;
+    }
+
+    System.out.printf("== %d번 게시물 상세보기 ==",id);
     System.out.printf("번호 : %d\n", article.id);
     System.out.printf("제목 : %s\n", article.subject);
     System.out.printf("내용 : %s\n", article.content);
@@ -219,6 +225,8 @@ public class Main {
           .filter(article -> article.subject.contains(searchKeyword) || article.content.contains(searchKeyword))
           .collect(Collectors.toList());
     }
+
+
     // 검색 끝
 
 
