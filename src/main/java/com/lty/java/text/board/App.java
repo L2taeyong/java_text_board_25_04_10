@@ -1,11 +1,16 @@
 package com.lty.java.text.board;
+
+import com.lty.java.text.board.boundedContext.article.Article;
 import com.lty.java.text.board.container.Container;
+import com.lty.java.text.board.global.base.Rq;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
 
 public class App {
   public List<Article> articles;
@@ -23,7 +28,7 @@ public class App {
         .forEach(i -> articles.add(new Article(i, "제목" + i, "내용" + i)));
   }
 
-  void run() {
+  public void run() {
     makeArticleTestData();
 
     System.out.println("== 자바 텍스트 게시판 ==");
