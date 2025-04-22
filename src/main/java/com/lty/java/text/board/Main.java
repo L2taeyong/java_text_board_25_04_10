@@ -7,7 +7,6 @@ import java.util.stream.IntStream;
 public class Main {
 
   static void makeArticleTestData(List<Article> articles) {
-
     IntStream.rangeClosed(1, 100)
         .forEach(i -> articles.add(new Article(i, "제목" + i, "내용" + i)));
   }
@@ -37,8 +36,8 @@ public class Main {
         actionUsrArticleList(rq, articles);
       } else if (rq.getUrlPath().equals("/usr/article/detail")) {
         actionUsrArticleDetail(rq, articles);
-
-
+      } else if (rq.getUrlPath().equals("/usr/article/modify")) {
+        actionUsrArticleModify(sc, rq, articles);
       } else if (rq.getUrlPath().equals("exit")) {
         System.out.println("텍스트 게시판을 종료합니다.");
         break;
@@ -50,6 +49,45 @@ public class Main {
     System.out.println("== 자바 텍스트 게시판 종료 ==");
 
     sc.close();
+  }
+
+  private static void actionUsrArticleModify(Scanner sc, Rq rq, List<Article> articles) {
+    Map<String, String> params = rq.getParams();
+
+    if (!params.containsKey("id")) {
+      System.out.println("id값을 입력해주세요.");
+      return;
+    }
+
+    int id = 0;
+
+    try {
+      id = Integer.parseInt(params.get("id"));
+    } catch (NumberFormatException e) {
+      System.out.println("id를 정수형태로 입력해주세요.");
+      return;
+    }
+
+    if (articles.isEmpty()) {
+      System.out.println("게시물이 존재하지 않습니다.");
+      return;
+    }
+
+    if (id > articles.size()) {
+      System.out.printf("%d번 게시물은 존재하지 않습니다.\n", id);
+      return;
+    }
+
+    System.out.printf("== %d번 게시물 수정 ==\n", id);
+    Article article = articles.get(id - 1);
+
+    System.out.print("새 제목 : ");
+    article.subject = sc.nextLine();
+
+    System.out.print("새 내용 : ");
+    article.content = sc.nextLine();
+
+    System.out.printf("%d번 게시물이 수정되었습니다.\n", id);
   }
 
   private static void actionUsrArticleWrite(Scanner sc, List<Article> articles, int lastArticleId) {
@@ -96,7 +134,6 @@ public class Main {
       return;
     }
 
-
     if (articles.isEmpty()) {
       System.out.println("게시물이 존재하지 않습니다.");
       return;
@@ -119,9 +156,10 @@ public class Main {
     Map<String, String> params = rq.getParams();
 
     // 검색 시작
-    List<Article> filteredArticles = new ArrayList<>();
+    // articles : 정렬되지 않은 1 ~ 100 게시물 객체를 품고 있는 리스트
+    List<Article> filteredArticles = new ArrayList<>(articles);
 
-    if(params.containsKey("seaerchKeyword")) {
+    if(params.containsKey("searchKeyword")) {
       String searchKeyword = params.get("searchKeyword");
 
       // filteredArticles = new ArrayList<>(); // 새 리스트 객체 생성
@@ -130,11 +168,11 @@ public class Main {
           .filter(article -> article.subject.contains(searchKeyword) || article.content.contains(searchKeyword))
           .collect(Collectors.toList());
     }
-    //검색 끝
+    // 검색 끝
 
 
-    //정렬 로직 시작
-    List<Article> sortedArticles = filteredArticles ;
+    // 정렬 로직
+    List<Article> sortedArticles = filteredArticles;
 
     if (params.containsKey("orderBy")) {
       String orderBy = params.get("orderBy");
@@ -155,14 +193,12 @@ public class Main {
     }
     // 정렬 끝
 
-
-    System.out.printf("== 게시물 리스트(총 %d 개) ==\n",sortedArticles.size());
+    System.out.printf("== 게시물 리스트(총 %d개) ==\n", sortedArticles.size());
     System.out.println("번호 | 제목");
 
     sortedArticles.forEach(
         article -> System.out.printf("%d | %s\n", article.id, article.subject)
     );
-
   }
 }
 
