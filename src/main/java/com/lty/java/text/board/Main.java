@@ -1,6 +1,7 @@
 package com.lty.java.text.board;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Main {
@@ -57,7 +58,23 @@ public class Main {
       } else if (rq.getUrlPath().equals("/usr/article/list")) {
         Map<String, String> params = rq.getParams();
 
-        List<Article> sortedArticles = new ArrayList<>(articles);
+        // 검색 시작
+        List<Article> filteredArticles = new ArrayList<>();
+
+        if(params.containsKey("seaerchKeyword")) {
+          String searchKeyword = params.get("searchKeyword");
+
+          // filteredArticles = new ArrayList<>(); // 새 리스트 객체 생성
+
+          filteredArticles = articles.stream()
+              .filter(article -> article.subject.contains(searchKeyword) || article.content.contains(searchKeyword))
+              .collect(Collectors.toList());
+         }
+        //검색 끝
+
+
+        //정렬 로직 시작
+        List<Article> sortedArticles = filteredArticles ;
 
         if (params.containsKey("orderBy")) {
           String orderBy = params.get("orderBy");
@@ -76,8 +93,10 @@ public class Main {
           // /usr/article/list 라고만 입력이 된 경우를 대비
           sortedArticles.sort((a1, a2) -> a2.id - a1.id);
         }
+        // 정렬 끝
 
-        System.out.println("== 게시물 리스트 ==");
+
+        System.out.printf("== 게시물 리스트(총 %d 개) ==\n",sortedArticles.size());
         System.out.println("번호 | 제목");
 
         sortedArticles.forEach(
