@@ -1,4 +1,4 @@
-package com.lty.java.text.board.boundedContext.article;
+package com.lty.java.text.board.boundedContext.article.dto;
 
 public class Article {
     public int id;
