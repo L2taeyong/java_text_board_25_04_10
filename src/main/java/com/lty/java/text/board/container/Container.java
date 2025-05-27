@@ -1,18 +1,22 @@
 package com.lty.java.text.board.container;
 
 import com.lty.java.text.board.boundedContext.article.controller.ArticleController;
+import com.lty.java.text.board.boundedContext.service.ArticleService;
 
 import java.util.Scanner;
 
 public class Container {
   public static Scanner sc;
 
+  public static ArticleService articleService;
   public static ArticleController articleController;
 
   // 프로그램 실행시 딱 한번 실행
   static {
     sc = new Scanner(System.in);
 
-     articleController = new ArticleController();
+    articleService = new ArticleService();
+
+    articleController = new ArticleController();
   }
 }
