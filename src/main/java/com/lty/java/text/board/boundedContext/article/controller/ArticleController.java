@@ -42,8 +42,16 @@ public class ArticleController {
 
   public void showList(Rq rq) {
     Map<String, String> params = rq.getParams();
-    String searchKeyword = params.get("searchKeyword");
-    String orderBy = params.get("orderBy");
+    String searchKeyword = "";
+    String orderBy = "idDesc";
+
+    if(params.containsKey("searchKeyword")) {
+      searchKeyword = params.get("searchKeyword");
+    }
+
+    if(params.containsKey("orderBy")) {
+      orderBy = params.get("orderBy");
+    }
 
     List<Article> articles = articleService.findAll(searchKeyword, orderBy);
 
@@ -121,6 +129,13 @@ public class ArticleController {
       return;
     }
 
+    Article article = articleService.findById(id);
+
+    if(article == null) {
+      System.out.printf("%d번 게시물은 존재하지 않습니다.\n", id);
+      return;
+    }
+
     System.out.printf("== %d번 게시물 수정 ==\n", id);
     System.out.print("새 제목 : ");
     String subject = Container.sc.nextLine();
@@ -154,6 +169,13 @@ public class ArticleController {
 
     if (articles.isEmpty()) {
       System.out.println("게시물이 존재하지 않습니다.");
+      return;
+    }
+
+    Article article = articleService.findById(id);
+
+    if(article == null) {
+      System.out.printf("%d번 게시물은 존재하지 않습니다.\n", id);
       return;
     }
 
